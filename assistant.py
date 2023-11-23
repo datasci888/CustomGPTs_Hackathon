@@ -1,6 +1,7 @@
 from openai import OpenAI
 from config import Config
 from scripts import read_file
+import json
 import time
 
 client = OpenAI(api_key=Config.open_ai_key)
@@ -25,7 +26,7 @@ thesis_file = client.files.create(
 assistant = client.beta.assistants.create(
     name = "Emo",
     instructions = instructions,
-    tools=[{"type": "retrieval"}],
+    tools=[{"type": "code_interpreter"},{"type": "retrieval"}],
     model="gpt-4-1106-preview",
     file_ids= [
         meditation_script_file.id,
@@ -66,5 +67,16 @@ def call(message_content : str ):
     output = client.beta.threads.messages.list(
         thread_id=thread.id
     )
-    return output.json()
+    return json.loads(output.model_dump_json())
 
+def download_file(file_id,dtype):
+    script = client.files.content(file_id)
+    script_byte_data = script.read()
+
+    # with open(f"script.{dtype}", "wb") as file:
+    #     file.write(script_byte_data)
+    return script_byte_data
+
+# output = call("I've been feeling really down for the past month. Ever since I failed my exams, I just can't seem to find any motivation.")
+# print(type(output))
+# print(output["data"][0]["content"][0]["text"]["value"])
