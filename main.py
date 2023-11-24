@@ -2,12 +2,17 @@ import streamlit as st
 from tts import TTS
 from assistant import call , download_file
 ttos = TTS()
+show_welcome = True
 
 st.title("PsychGenGPT")
-
+st.markdown('PsychGenGPT - Psychological Counseling | Text to voice psychotherapy generator At any time, to generate a psychotherapy session, say, "Generate psychotherapy session now.')
 # Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
+    st.session_state.messages.append({"role": "assistant", "content": "🌟 Welcome to PsychGenGPT! 🌟 \n Hello and thank you for choosing PsychGenGPT for your psychological counseling needs and to generate psychotherapy script and audio. How can I assist you today?"})
+# if show_welcome :
+#     st.session_state.messages.append({"role": "assistant", "content": "🌟 Welcome to PsychGenGPT! 🌟"})
+#     show_welcome = False
 
 # Display chat messages from history on app rerun
 for message in st.session_state.messages:
@@ -15,6 +20,7 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # React to user input
+
 if prompt := st.chat_input("What is up?"):
     # Display user message in chat message container
     st.chat_message("user").markdown(prompt)
@@ -29,10 +35,12 @@ if prompt := st.chat_input("What is up?"):
     with st.chat_message("assistant"):
         st.markdown(response)
 
-    if "psychotherapy session" in prompt.lower() :
-        if output["data"][0]["content"][0]["text"]["annotations"] == []:
-            audio_output = ttos.generate_tts(output["data"][0]["content"][0]["text"]["value"])
-            st.audio(audio_output)
+    if "psychotherapy session" in prompt.lower() or "psychotherapy script" in prompt.lower():
+        # if output["data"][0]["content"][0]["text"]["annotations"] == []:
+        print(output["data"][0]["content"][0]["text"]["annotations"])
+        audio_output = ttos.generate_tts(output["data"][0]["content"][0]["text"]["value"])
+        # st.session_state.messages.append(st.audio(audio_output))
+        st.audio(audio_output)
     
     if output["data"][0]["content"][0]["text"]["annotations"] != []:
         file_id = output["data"][0]["content"][0]["text"]["annotations"][0]["file_path"]["file_id"]
