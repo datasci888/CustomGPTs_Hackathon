@@ -1,5 +1,7 @@
 # CustomGPTs Hackathon
 
+## Try it out here: https://psychgen-customgpt.streamlit.app/
+
 # PsychGenGPT: Innovating Mental Health Support
 
 ## Introduction
