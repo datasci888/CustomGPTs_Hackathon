@@ -2,7 +2,6 @@ import streamlit as st
 from tts import TTS
 from assistant import call , download_file
 ttos = TTS()
-show_welcome = True
 
 st.title("PsychGenGPT")
 st.markdown('PsychGenGPT - Psychological Counseling | Text to voice psychotherapy generator At any time, to generate a psychotherapy session, say, "Generate psychotherapy session now.')
@@ -10,9 +9,7 @@ st.markdown('PsychGenGPT - Psychological Counseling | Text to voice psychotherap
 if "messages" not in st.session_state:
     st.session_state.messages = []
     st.session_state.messages.append({"role": "assistant", "content": "🌟 Welcome to PsychGenGPT! 🌟 \n Hello and thank you for choosing PsychGenGPT for your psychological counseling needs and to generate psychotherapy script and audio. How can I assist you today?"})
-# if show_welcome :
-#     st.session_state.messages.append({"role": "assistant", "content": "🌟 Welcome to PsychGenGPT! 🌟"})
-#     show_welcome = False
+
 
 # Display chat messages from history on app rerun
 for message in st.session_state.messages:
@@ -28,7 +25,6 @@ if prompt := st.chat_input("What is up?"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     
     output = call(prompt)
-    print(output)
 
     response = f'PsychGenGPT: {output["data"][0]["content"][0]["text"]["value"]}'
     # Display assistant response in chat message container
@@ -37,7 +33,7 @@ if prompt := st.chat_input("What is up?"):
 
     if "psychotherapy session" in prompt.lower() or "psychotherapy script" in prompt.lower():
         # if output["data"][0]["content"][0]["text"]["annotations"] == []:
-        print(output["data"][0]["content"][0]["text"]["annotations"])
+        # print(output["data"][0]["content"][0]["text"]["annotations"])
         audio_output = ttos.generate_tts(output["data"][0]["content"][0]["text"]["value"])
         # st.session_state.messages.append(st.audio(audio_output))
         st.audio(audio_output)
